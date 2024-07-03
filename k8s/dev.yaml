@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dev
+  template:
+    metadata:
+      labels:
+        app: dev
+    spec:
+      containers:
+        - name: dev
+          image: zerohertzkr/dev
+          env:
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_DB
+              value: "0"
+          command: ["sh", "-c", "tail -f /dev/null"]
+          volumeMounts:
+            - mountPath: /home/zerohertz/workspace
+              name: dev-storage
+      volumes:
+        - name: dev-storage
+          hostPath:
+            path: /home/zerohertz/Zerohertz/redis-python
+            type: DirectoryOrCreate
